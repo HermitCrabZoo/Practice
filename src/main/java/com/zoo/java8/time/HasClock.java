@@ -8,6 +8,7 @@ public class HasClock {
 		System.out.println("millis:"+clock.millis());//当前毫秒数
 		System.out.println("Clock : " + clock);
 		// Returns time based on system clock zone
+		//当前时区
 		Clock defaultClock = Clock.systemDefaultZone();
 		System.out.println("Clock : " + defaultClock);
 	}

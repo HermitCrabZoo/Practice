@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Set;
 
 public class HasZoneDateTime {
 	public static void main(String[] args) {
@@ -16,6 +17,11 @@ public class HasZoneDateTime {
 	}
 
 	public void testZoneDateTime() {
+		//所有时区
+		Set<String> sets = ZoneId.getAvailableZoneIds();
+		sets.stream().forEach(System.out::println);
+		
+		//新的java.time.ZoneId替代了老版本的java.util.TimeZone.
 		// 纽约的时区，时区名称错误则抛异常
 		ZoneId america = ZoneId.of("America/New_York");
 		LocalDateTime localDateTime1 = LocalDateTime.now();
@@ -37,7 +43,7 @@ public class HasZoneDateTime {
 		ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(now, currentZone);
 		System.out.println("Zoned date: " + zonedDateTime);
 		
-		//印度的时间与标砖GMT时间相差+05:30
+		//印度的时间与标准GMT时间相差+05:30
 		LocalDateTime localDateTime3 = LocalDateTime.of(2014, Month.JANUARY, 14, 19, 30);
 		ZoneOffset zoneOffset = ZoneOffset.of("+05:30");
 		OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime3, zoneOffset);
