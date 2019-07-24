@@ -77,7 +77,7 @@ public interface Tree<T extends Comparable<?>> {
 	 * @param data
 	 * @return
 	 */
-	BinaryNode findNode(T data);
+	BinaryNode<T> findNode(T data);
 
 	/**
 	 * 是否包含某个值
@@ -101,7 +101,7 @@ public interface Tree<T extends Comparable<?>> {
 
 		public T data;
 
-		public BinaryNode(T data, BinaryNode left, BinaryNode right) {
+		public BinaryNode(T data, BinaryNode<T> left, BinaryNode<T> right) {
 			this.data = data;
 			this.left = left;
 			this.right = right;
