@@ -60,7 +60,7 @@ public class LinkedQueue<T> implements Queue<T> {
 		if (isEmpty()) {// 空队列插入
 			this.front = this.rear = q;
 		} else {// 非空队列,尾部插入
-			this.rear.next = q;
+			this.rear.next = this.rear = q;
 		}
 		size++;
 		return true;
@@ -123,10 +123,13 @@ public class LinkedQueue<T> implements Queue<T> {
 	public T poll() {
 		if (this.isEmpty())
 			return null;
-		T x = this.front.element;
-		this.front = this.front.next;
+		Node<T> p = this.front;
+		T x = p.element;
+		this.front = p.next;
 		if (this.front == null)
 			this.rear = null;
+		p.element = null;
+		p.next = null;
 		size--;
 		return x;
 	}

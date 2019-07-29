@@ -2,9 +2,9 @@ package com.zoo.datastructure;
 
 public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 
-	private BinaryNode<T> root;
+	protected BinaryNode<T> root;
 
-	private int size = 0;
+	protected int size = 0;
 
 	@Override
 	public void insert(T data) {
@@ -412,9 +412,37 @@ public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 		}
 	}
 
+	/**
+	 * 层次遍历
+	 * 
+	 * @return
+	 */
 	@Override
 	public String levelOrder() {
-		return null;
+		/**
+		 * 存放需要遍历的结点,左结点一定优先右节点遍历
+		 */
+		LinkedQueue<BinaryNode<T>> queue = new LinkedQueue<>();
+		StringBuilder sb = new StringBuilder();
+		BinaryNode<T> p = this.root;
+
+		while (p != null) {
+			// 记录经过的结点
+			sb.append(p.data);
+
+			// 先按层次遍历结点,左结点一定在右结点之前访问
+			if (p.left != null) {
+				// 孩子结点入队
+				queue.add(p.left);
+			}
+
+			if (p.right != null) {
+				queue.add(p.right);
+			}
+			// 访问下一个结点
+			p = queue.poll();
+		}
+		return sb.toString();
 	}
 
 	@Override
