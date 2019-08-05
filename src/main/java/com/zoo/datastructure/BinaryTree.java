@@ -1,5 +1,7 @@
 package com.zoo.datastructure;
 
+import java.io.Serializable;
+
 public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 
 	protected BinaryNode<T> root;
@@ -466,7 +468,7 @@ public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 	 * @param p
 	 * @return
 	 */
-	private BinaryNode<T> findMin(BinaryNode<T> p) {
+	protected BinaryNode<T> findMin(BinaryNode<T> p) {
 		if (p == null)// 结束条件
 			return null;
 		else if (p.left == null)// 如果没有左结点,那么t就是最小的
@@ -480,7 +482,7 @@ public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 	 * @param p
 	 * @return
 	 */
-	private BinaryNode<T> findMax(BinaryNode<T> p) {
+	protected BinaryNode<T> findMax(BinaryNode<T> p) {
 		if (p == null)// 结束条件
 			return null;
 		else if (p.right == null)
@@ -504,7 +506,7 @@ public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 	 * @param subtree
 	 * @return
 	 */
-	private int height(BinaryNode<T> subtree) {
+	protected int height(BinaryNode<T> subtree) {
 		if (subtree == null) {
 			return 0;
 		} else {
@@ -550,10 +552,6 @@ public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 		return size;
 	}
 
-	@Override
-	public BinaryNode<T> findNode(T data) {
-		return null;
-	}
 
 	@Override
 	public boolean contains(T data) throws Exception {
@@ -668,6 +666,37 @@ public class BinaryTree<T extends Comparable<T>> implements Tree<T> {
 		}
 
 		return p;
+	}
+	
+
+	static class BinaryNode<T extends Comparable<?>> implements Serializable {
+		private static final long serialVersionUID = -6477238039299912313L;
+
+		public BinaryNode<T> left;// 左结点
+
+		public BinaryNode<T> right;// 右结点
+
+		public T data;
+
+		public BinaryNode(T data, BinaryNode<T> left, BinaryNode<T> right) {
+			this.data = data;
+			this.left = left;
+			this.right = right;
+		}
+
+		public BinaryNode(T data) {
+			this(data, null, null);
+
+		}
+
+		/**
+		 * 判断是否为叶子结点
+		 * 
+		 * @return
+		 */
+		public boolean isLeaf() {
+			return this.left == null && this.right == null;
+		}
 	}
 
 	static class EmptyTreeException extends RuntimeException {
