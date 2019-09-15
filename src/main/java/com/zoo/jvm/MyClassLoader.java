@@ -2,8 +2,8 @@ package com.zoo.jvm;
 
 import java.nio.file.Paths;
 
-import com.zoo.mix.Filer;
-import com.zoo.mix.Pather;
+import com.zoo.io.Filer;
+import com.zoo.io.Pather;
 import com.zoo.system.Platform;
 
 public class MyClassLoader extends ClassLoader {
@@ -46,8 +46,8 @@ public class MyClassLoader extends ClassLoader {
 	 * @return
 	 */
 	private byte[] loadClassData(String name) {
-		String filename=Pather.join(path,name.replace(".", Platform.slash()))+fileType;
-		byte[] data=Filer.readBytes(Paths.get(filename));
+		String filename= Pather.join(path,name.replace(".", Platform.slash()))+fileType;
+		byte[] data= Filer.readBytes(Paths.get(filename));
 		return  data;
 	}
 

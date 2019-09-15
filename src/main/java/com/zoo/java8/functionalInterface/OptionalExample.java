@@ -6,7 +6,8 @@ public class OptionalExample {
 	public static void main(String[] args) {
 		OptionalExample tester = new OptionalExample();
 	      Integer value1 = null;
-	      Integer value2 = new Integer(5);
+//	      Integer value2 = new Integer(5);//java9开始过期
+	      Integer value2 = Integer.valueOf(5);
 
 	      // ofNullable 允许传参时给出 null,此方法传参时不会报空指针
 	      Optional<Integer> a = Optional.ofNullable(value1);
@@ -24,7 +25,8 @@ public class OptionalExample {
 	      System.out.println("Second parameter is present: " + b.isPresent());
 
 	      // 如果当前返回的是传入的默认值，orElse 将返回它
-	      Integer value1 = a.orElse(new Integer(0));
+//	      Integer value1 = a.orElse(new Integer(0));
+		   Integer value1 = Integer.valueOf(0);
 
 	      // get 用于获得值，条件是这个值必须存在
 	      Integer value2 = b.get();

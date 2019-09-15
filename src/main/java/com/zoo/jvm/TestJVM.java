@@ -1,5 +1,7 @@
 package com.zoo.jvm;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * 类加载：双亲委托机制，先通过父加载器加载，若加载成功则返回Class实例，否则自己加载。
  * 根类加载器：Bootstrap
@@ -38,8 +40,9 @@ public class TestJVM {
 	public static void load(ClassLoader loader,String name) {
 		try {
 			Class<?> clazz=loader.loadClass(name);
-			Object obj=clazz.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+//			Object obj=clazz.newInstance();//java9开始过期
+			Object obj=clazz.getDeclaredConstructor().newInstance();
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 	}

@@ -13,8 +13,8 @@ plugins {
 //eclipse插件  
 apply plugin: 'eclipse' 
 
-//JDK1.8
-sourceCompatibility = 1.8  
+//JDK11
+sourceCompatibility = 1.11
 //版本号  
 version = '1.0'  
 
@@ -76,10 +76,10 @@ dependencies {
 	//hadoop
 	//api 'org.apache.hadoop:hadoop-core:1.2.1'
 	
-	api 'org.apache.hadoop:hadoop-hdfs:2.7.7'
-	api 'org.apache.hadoop:hadoop-mapreduce-client-core:2.7.7'
-	api 'org.apache.hadoop:hadoop-common:2.7.7'
-	api 'org.apache.hadoop:hadoop-auth:2.7.7'
+	api 'org.apache.hadoop:hadoop-hdfs:3.2.0'
+	api 'org.apache.hadoop:hadoop-mapreduce-client-core:3.2.0'
+	api 'org.apache.hadoop:hadoop-common:3.2.0'
+	api 'org.apache.hadoop:hadoop-auth:3.2.0'
 	
 	//取代commons-httpclient
 	api 'org.apache.httpcomponents:httpclient:4.5.6'
