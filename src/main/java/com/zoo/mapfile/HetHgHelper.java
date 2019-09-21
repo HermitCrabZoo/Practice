@@ -22,10 +22,10 @@ public class HetHgHelper {
 
 
     public static void main(String[] args) throws Exception {
-        String sourceFile = "E:\\result\\BS2_hom_het\\BS2_hom_het.hg19.txt";
-        String indexDir = "E:\\result\\BS2_hom_het\\data";
+//        String sourceFile = "E:\\result\\BS2_hom_het\\BS2_hom_het.hg19.txt";
+//        String indexDir = "E:\\result\\BS2_hom_het\\data";
 //        write(sourceFile, indexDir);
-         read(sourceFile, indexDir);
+//        read(sourceFile, indexDir);
         //  key=12 52841404 T C   value= 0 1
 //        Text val = readByKey("1", 161276434, 161276434, "A", "G");
 //        System.out.println(val.toString());
@@ -35,11 +35,8 @@ public class HetHgHelper {
 
     public static void write(String sourceFile, String indexDir) throws IOException {
         Configuration conf = new Configuration();
-//        Writer.Option o1 = Writer.keyClass(HetHgKey.class);
-        try (FileSystem fs = FileSystem.getLocal(conf);
-             FileItr<String> fileItr = new FileLineItr(sourceFile);
-             Writer writer = new Writer(conf, fs, indexDir, HetHgKey.class, Text.class)/*;
-             Writer writer1 = new Writer(conf, new Path(path.toString()), o1)*/) {
+        try (FileItr<String> fileItr = new FileLineItr(sourceFile);
+             Writer writer = new Writer(conf, new Path(indexDir), Writer.keyClass(HetHgKey.class), Writer.valueClass(Text.class))) {
             HetHgKey key = new HetHgKey();
             Text value = new Text();
             String[] tab;
@@ -51,7 +48,7 @@ public class HetHgHelper {
                 lines.add(tab);
             }
             lines.sort(Comparator.comparing(t -> HetHgKey.getIndex(((String[]) t)[0])).thenComparingInt(t -> Integer.valueOf(((String[]) t)[1])).thenComparing(t -> ((String[]) t)[2]).thenComparing(t -> ((String[]) t)[3]));
-            for(String[] line:lines){
+            for (String[] line : lines) {
                 String chr = line[0];
                 int pos = Integer.valueOf(line[1]);
                 String ref = line[2];
@@ -70,14 +67,12 @@ public class HetHgHelper {
 
     public static void read(String sourceFile, String indexDir) throws IOException {
         //创建配置信息
-        Configuration conf = new Configuration();
-        //创建文件系统
         //创建Path对象
-        //4.new一个MapFile.Reader进行读取
-        try (FileSystem fs = FileSystem.getLocal(conf);
-             Reader reader = new Reader(fs, indexDir, conf);
+        //new一个MapFile.Reader进行读取
+        Configuration conf = new Configuration();
+        Path dir = new Path(indexDir);
+        try (Reader reader = new Reader(dir, conf);
              FileItr<String> fileItr = new FileLineItr(sourceFile)) {
-
             List<String[]> lines = new ArrayList<>(6000000);
             for (String line : fileItr) {
                 lines.add(line.split(" "));
@@ -121,8 +116,7 @@ public class HetHgHelper {
         key.setAlt(new Text(alt));
         Text value = new Text();
         //4.new一个MapFile.Reader进行读取
-        try (FileSystem fs = FileSystem.getLocal(conf);
-             MapFile.Reader reader = new MapFile.Reader(fs, path.toString(), conf)) {
+        try (MapFile.Reader reader = new MapFile.Reader(path, conf)) {
             reader.get(key, value);
         }
         return value;
