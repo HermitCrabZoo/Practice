@@ -8,6 +8,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapFile;
+import org.apache.hadoop.io.MapFile.Writer;
+import org.apache.hadoop.io.MapFile.Reader;
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
@@ -20,21 +22,24 @@ public class HetHgHelper {
 
 
     public static void main(String[] args) throws Exception {
-//        write();
-//         read();
+        String sourceFile = "E:\\result\\BS2_hom_het\\BS2_hom_het.hg19.txt";
+        String indexDir = "E:\\result\\BS2_hom_het\\data";
+//        write(sourceFile, indexDir);
+         read(sourceFile, indexDir);
         //  key=12 52841404 T C   value= 0 1
-        Text val = readByKey("1", 161276434, 161276434, "A", "G");
-        System.out.println(val.toString());
+//        Text val = readByKey("1", 161276434, 161276434, "A", "G");
+//        System.out.println(val.toString());
 
 
     }
 
-    public static void write() throws IOException {
-        Path path = new Path("E:\\result\\BS2_hom_het\\data.map");
+    public static void write(String sourceFile, String indexDir) throws IOException {
         Configuration conf = new Configuration();
+//        Writer.Option o1 = Writer.keyClass(HetHgKey.class);
         try (FileSystem fs = FileSystem.getLocal(conf);
-             FileItr<String> fileItr = new FileLineItr("E:\\result\\BS2_hom_het\\BS2_hom_het.hg19.txt");
-             MapFile.Writer writer = new MapFile.Writer(conf, fs, path.toString(), HetHgKey.class, Text.class)) {
+             FileItr<String> fileItr = new FileLineItr(sourceFile);
+             Writer writer = new Writer(conf, fs, indexDir, HetHgKey.class, Text.class)/*;
+             Writer writer1 = new Writer(conf, new Path(path.toString()), o1)*/) {
             HetHgKey key = new HetHgKey();
             Text value = new Text();
             String[] tab;
@@ -63,23 +68,21 @@ public class HetHgHelper {
         }
     }
 
-    public static void read() throws IOException {
-        Path path = new Path("E:\\result\\BS2_hom_het\\data.map");
+    public static void read(String sourceFile, String indexDir) throws IOException {
         //创建配置信息
         Configuration conf = new Configuration();
         //创建文件系统
         //创建Path对象
         //4.new一个MapFile.Reader进行读取
         try (FileSystem fs = FileSystem.getLocal(conf);
-             MapFile.Reader reader = new MapFile.Reader(fs, path.toString(), conf);
-             FileItr<String> fileItr = new FileLineItr("E:\\result\\BS2_hom_het\\BS2_hom_het.hg19.txt")) {
+             Reader reader = new Reader(fs, indexDir, conf);
+             FileItr<String> fileItr = new FileLineItr(sourceFile)) {
 
             List<String[]> lines = new ArrayList<>(6000000);
             for (String line : fileItr) {
                 lines.add(line.split(" "));
             }
             lines.sort(Comparator.comparing(t -> HetHgKey.getIndex(((String[]) t)[0])).thenComparingInt(t -> Integer.valueOf(((String[]) t)[1])).thenComparing(t -> ((String[]) t)[2]).thenComparing(t -> ((String[]) t)[3]));
-
 
             //创建Key和Value
             HetHgKey key = new HetHgKey();
