@@ -4,12 +4,11 @@ package com.zoo.mapfile;
 import com.zoo.io.FileItr;
 import com.zoo.io.FileLineItr;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapFile;
-import org.apache.hadoop.io.MapFile.Writer;
 import org.apache.hadoop.io.MapFile.Reader;
+import org.apache.hadoop.io.MapFile.Writer;
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;

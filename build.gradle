@@ -11,12 +11,14 @@ plugins {
     id 'java-library'
 }
 //eclipse插件  
-apply plugin: 'eclipse' 
+apply plugin: 'eclipse'
+
+apply plugin: "me.champeau.gradle.jmh"
 
 //JDK11
 sourceCompatibility = 1.11
 //版本号  
-version = '1.0'  
+version = '1.0'
 
 //下载源码
 eclipse {
@@ -26,8 +28,8 @@ eclipse {
 }
 
 //由于有些子依赖可能在运行时用不到,true代表下载子依赖，false代表不下载子依赖
-configurations.all{
-	transitive=true
+configurations.all {
+    transitive = true
 }
 
 dependencies {
@@ -39,13 +41,17 @@ dependencies {
     //implementation:依赖库变动的话只会影响、重新编译到当前库，不会影响到其他，因此编译速度会提高
     implementation 'com.google.guava:guava:23.0'
 
+    //jmh
+    implementation 'org.openjdk.jmh:jmh-core:1.21'
+    implementation 'org.openjdk.jmh:jmh-generator-annprocess:1.21'
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest-core:1.3'
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
-    
-    compile fileTree(dir:'lib',include:['*.jar'])
-    
+
+    compile fileTree(dir: 'lib', include: ['*.jar'])
+
     api 'junit:junit:4.12'
     api 'commons-io:commons-io:2.6'
     api 'commons-logging:commons-logging:1.2'
@@ -56,35 +62,35 @@ dependencies {
     //api 'org.apache.hadoop:hadoop-core:1.2.1'
     //api 'org.apache.hive:hive-exec:2.3.3'
     api 'net.sourceforge.jexcelapi:jxl:2.6.12'
-    
+
     api 'org.apache.lucene:lucene-core:7.3.1'
     api 'org.apache.lucene:lucene-queryparser:7.3.1'
     api 'org.apache.lucene:lucene-analyzers-common:7.3.1'
     api 'org.apache.lucene:lucene-analyzers-smartcn:7.3.1'
     api 'com.github.magese:ik-analyzer-solr7:7.x'
-    
+
     api 'redis.clients:jedis:2.9.0'
     api 'org.apache.commons:commons-pool2:2.4.2'
-    
+
     //kafka
     api 'org.apache.kafka:kafka_2.12:1.1.1'
-    
+
     //cpdetector部分
-	api 'net.sourceforge.jchardet:jchardet:1.0'
-	api 'antlr:antlr:2.7.7'
-	
-	//hadoop
-	//api 'org.apache.hadoop:hadoop-core:1.2.1'
-	
-	api 'org.apache.hadoop:hadoop-hdfs:3.2.0'
-	api 'org.apache.hadoop:hadoop-mapreduce-client-core:3.2.0'
-	api 'org.apache.hadoop:hadoop-common:3.2.0'
-	api 'org.apache.hadoop:hadoop-auth:3.2.0'
-	
-	//取代commons-httpclient
-	api 'org.apache.httpcomponents:httpclient:4.5.6'
-	
-    
+    api 'net.sourceforge.jchardet:jchardet:1.0'
+    api 'antlr:antlr:2.7.7'
+
+    //hadoop
+    //api 'org.apache.hadoop:hadoop-core:1.2.1'
+
+    api 'org.apache.hadoop:hadoop-hdfs:3.2.0'
+    api 'org.apache.hadoop:hadoop-mapreduce-client-core:3.2.0'
+    api 'org.apache.hadoop:hadoop-common:3.2.0'
+    api 'org.apache.hadoop:hadoop-auth:3.2.0'
+
+    //取代commons-httpclient
+    api 'org.apache.httpcomponents:httpclient:4.5.6'
+
+
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -92,8 +98,9 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
 }
-tasks.withType(JavaCompile) {  
+tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"//编译参数:未检查,过期API
 }
@@ -101,7 +108,7 @@ tasks.withType(JavaCompile) {
 //将依赖一同打包进项目生成的jar文件里
 jar {
     manifest {
-    	attributes(
+        attributes(
                 "Manifest-Version": 1.0,
         )
     }
