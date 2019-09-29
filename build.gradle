@@ -13,8 +13,6 @@ plugins {
 //eclipse插件  
 apply plugin: 'eclipse'
 
-apply plugin: "me.champeau.gradle.jmh"
-
 //JDK11
 sourceCompatibility = 1.11
 //版本号  

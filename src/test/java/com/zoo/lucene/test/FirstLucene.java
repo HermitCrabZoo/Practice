@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import com.zoo.base.Resource;
-import com.zoo.mix.Filer;
+import com.zoo.io.Filer;
 
 /**
  * Lucene 入门 创建索引 查询索引
