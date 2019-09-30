@@ -1,7 +1,5 @@
 package com.zoo.concurrent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
@@ -32,18 +30,13 @@ public class LongAdderTest {
     private static void testAtomicLong(final int threadCount, final int times) throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         AtomicLong atomicLong = new AtomicLong();
-        List<Thread> list = new ArrayList<>();
         for (int i = 0; i < threadCount; i++) {
-            list.add(new Thread(() -> {
+            new Thread(() -> {
                 for (int j = 0; j < times; j++) {
                     atomicLong.incrementAndGet();
                 }
                 countDownLatch.countDown();
-            }, "my-thread" + i));
-        }
-
-        for (Thread thread : list) {
-            thread.start();
+            }, "my-thread" + i).start();
         }
         countDownLatch.await();
     }
@@ -51,18 +44,13 @@ public class LongAdderTest {
     private static void testLongAdder(final int threadCount, final int times) throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         LongAdder longAdder = new LongAdder();
-        List<Thread> list = new ArrayList<>();
         for (int i = 0; i < threadCount; i++) {
-            list.add(new Thread(() -> {
+            new Thread(() -> {
                 for (int j = 0; j < times; j++) {
                     longAdder.add(1);
                 }
                 countDownLatch.countDown();
-            }, "my-thread" + i));
-        }
-
-        for (Thread thread : list) {
-            thread.start();
+            }, "my-thread" + i).start();
         }
         countDownLatch.await();
     }
