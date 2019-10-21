@@ -1,0 +1,122 @@
+syntax = "proto3";
+package com.amcare.opengk.jvar.rpc;
+option java_outer_classname = "Element";
+option optimize_for = LITE_RUNTIME;
+
+
+service JvarTransfer { // data transfer service
+    rpc getJvar (stream BatchRequest) returns (stream BatchResponse) { } //查一批
+}
+
+//批量请求体：包含多个请求体
+message BatchRequest {
+    repeated RequestBody data = 1;
+
+    //请求体
+    message RequestBody {
+        //版本
+        string version = 1;
+        //染色体
+        string chr = 2;
+        //起始位点
+        int32 start = 3;
+        //结束位点
+        int32 end = 4;
+        //开始位点的偏移
+        int32 sOffset = 5;
+        //结束位点的偏移
+        int32 eOffset = 6;
+        //转录本标志(1、0)
+        int32 nice = 7;
+        //参考碱基
+        string ref = 8;
+        //突变
+        string alt = 9;
+    }
+}
+
+
+//批量响应体：包含多个响应体
+message BatchResponse {
+    //响应体列表，与请求体一一对应。
+    repeated ResponseBody data = 1;
+    //转录本键值对，key：name+'#'+chr+'#'+start，value：ResponseBody.Transcript对象。
+    map<string, ResponseBody.Transcript> transcripts = 2;
+
+    //响应体
+    message ResponseBody {
+        //type：rmsk，按匹配的多条记录的start升序，取多个name字段值。
+        repeated string rmsks = 1;
+        //type：clinvar_20190305，取CLNSIG字段值
+        string clnsig = 2;
+        //type：dbscsnv11，取dbscSNV_ADA_SCORE字段值
+        string dbscSnvRfScore = 3;
+        //type：dbscsnv11，取dbscSNV_RF_SCORE字段值
+        string dbscSnvAdaScore = 4;
+        //type：dbnsfp33a，取Interpro_domain字段值
+        string interproDomain = 5;
+        //type：dbnsfp33a，取MetaSVM_score字段值
+        string metaSvmScore = 6;
+        //type：dbnsfp33a，取GERP++_RS字段值
+        string gerpPpRs = 7;
+        //type：1000g2015aug_all，取score字段值
+        string kg2015AugAll = 8;
+        //type：esp6500siv2_all，取score字段值
+        string esp6500Siv2All = 9;
+        //type：gnomad_genome，取gnomAD_genome_ALL字段值
+        string gnomAdGenomeAll = 10;
+        //type：gnomad_genome，取gnomAD_genome_AFR字段值
+        string gnomAdGenomeAfr = 11;
+        //type：gnomad_genome，取gnomAD_genome_AMR字段值
+        string gnomAdGenomeAmr = 12;
+        //type：gnomad_genome，取gnomAD_genome_EAS字段值
+        string gnomAdGenomeEas = 13;
+        //type：gnomad_genome，取gnomAD_genome_FIN字段值
+        string gnomAdGenomeFin = 14;
+        //type：gnomad_genome，取gnomAD_genome_NFE字段值
+        string gnomAdGenomeNfe = 15;
+        //type：gnomad_genome，取gnomAD_genome_OTH字段值
+        string gnomAdGenomeOth = 16;
+        //type：gnomad_genome，取gnomAD_genome_ASJ字段值
+        string gnomAdGenomeAsj = 17;
+
+        //type：refGene对应的转录本组合
+        Gene refGene = 18;
+        //type：ensGene对应的转录本组合
+        Gene ensGene = 19;
+        //type：knownGene对应的转录本组合
+        Gene knownGene = 20;
+
+        //type为：refGene(包含refGeneMrna)、ensGene(包含ensGeneMrna)、knownGene(包含knownGeneMrna)对应的消息封装对象
+        message Gene {
+            //位点匹配的转录本的key(name+'#'+chr+'#'+start)列表，可能存在多条结果。成立条件：chr==chr（入参） && start < end（入参） && end >= start（入参）。
+            repeated string matcheds = 1;
+            //位点匹配上游的转录本的key(name+'#'+chr+'#'+start)，按start升序取第一个。成立条件：当matcheds没有匹配到一个转录本以上时，且chr==chr（入参）&& start >= end(入参) && start <= eOffset。
+            string up = 2;
+            //位点匹配下游的转录本的key(name+'#'+chr+'#'+start)，按end降序取第一个。成立条件：当matcheds没有匹配到一个转录本以上时，且chr==chr（入参）&& end < start(入参) && end > sOffset。
+            string down = 3;
+        }
+
+        //转录本对象的封装
+        message Transcript {
+            //以下个字段分别与持久化所在地保存的字段一致，此处不再做过多说明。
+            string name = 1;
+            string gene = 2;
+            string chr = 3;
+            string strand = 4;
+            int32 start = 5;
+            int32 end = 6;
+            int32 cdsStart = 7;
+            int32 cdsEnd = 8;
+            int32 exonCount = 9;
+            repeated int32 exonStarts = 10 [packed = true];
+            repeated int32 exonEnds = 11 [packed = true];
+            int64 cdsLen = 12;
+            int64 exonLen = 13;
+            //该字段为当前转录本对象对应的参考序列，当转录本的类型为refGene时，该字段来源的类型为refGeneMrna的数据。
+            //查询条件为：chr == chr(当前转录本) && name == name(当前转录本) && firstExonStart == start(当前转录本)
+            string seq = 14;
+        }
+    }
+}
+
