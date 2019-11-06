@@ -3,7 +3,10 @@ package com.zoo.algorithm.sort;
 import java.util.Arrays;
 
 /**
- * 计数排序
+ * 计数排序<br>
+ * 稳定<br>
+ * 数组大小：N，数组元素最大最小之间的差值+1：M，时间复杂度：O(N+M)、空间复杂度：O(M)。<br>
+ * 线性排序算法。<br>
  */
 public class CountSort {
 

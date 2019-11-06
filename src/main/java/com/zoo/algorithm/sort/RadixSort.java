@@ -3,7 +3,10 @@ package com.zoo.algorithm.sort;
 import java.util.Arrays;
 
 /**
- * 基数排序
+ * 基数排序<br>
+ * 稳定<br>
+ * 最长的字符串长度：k，数组长度：N，字符对应的int值范围(可简单暴力地理解为ascii码的取值范围)：M，时间复杂度：O(k(N+M))，空间复杂度：O(N+M)。<br>
+ * 由于字符串元素的长度k是固定常量，所以仍然认为该算法是线性排序算法。<br>
  */
 public class RadixSort {
     //ascii码的取值范围
