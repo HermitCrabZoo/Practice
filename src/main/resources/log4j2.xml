@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+    <Properties>
+        <Property name="LOG_HOME">./logs</Property>
+        <Property name="FILE_SIZE">300M</Property>
+        <Property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Property>
+        <Property name="ERROR_LOG_FILE_NAME">error</Property>
+        <Property name="ERROR_LOG_FILE_NAME_OTHER">error-other</Property>
+        <Property name="ROLLING_FILE_NAME">-%d{yyyy-MM-dd}.%i.zip</Property>
+        <Property name="ROLLOVER_STRATEGY_MAX">30</Property>
+    </Properties>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PATTERN}"/>
+        </Console>
+        <RollingRandomAccessFile name="ErrorLog"
+                                 fileName="${LOG_HOME}/${ERROR_LOG_FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/${ERROR_LOG_FILE_NAME}-log${ROLLING_FILE_NAME}">
+            <PatternLayout charset="UTF-8" pattern="${PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${FILE_SIZE}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${ROLLOVER_STRATEGY_MAX}"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="OtherErrorLog"
+                                 fileName="${LOG_HOME}/${ERROR_LOG_FILE_NAME_OTHER}.log"
+                                 filePattern="${LOG_HOME}/${ERROR_LOG_FILE_NAME_OTHER}-log${ROLLING_FILE_NAME}">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="${PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${FILE_SIZE}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${ROLLOVER_STRATEGY_MAX}"/>
+        </RollingRandomAccessFile>
+    </appenders>
+
+    <loggers>
+        <AsyncLogger name="com.zoo" level="INFO" additivity="false">
+            <appender-ref ref="ErrorLog"/>
+            <appender-ref ref="Console"/>
+        </AsyncLogger>
+        <AsyncRoot level="INFO">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="OtherErrorLog"/>
+        </AsyncRoot>
+    </loggers>
+</configuration>

@@ -101,6 +101,12 @@ dependencies {
     api 'io.grpc:grpc-netty-shaded:1.24.0'
     api 'io.grpc:grpc-protobuf:1.24.0'
     api 'io.grpc:grpc-stub:1.24.0'
+    
+    //slf4j+log4j2,此依赖中包含log4j2
+    api 'org.apache.logging.log4j:log4j-slf4j-impl:2.12.0'
+    api 'com.lmax:disruptor:3.4.2'//若要用到log4j2的异步输出则需要导入
+
+    api 'io.netty:netty-all:4.1.43.Final'
 }
 
 // In this section you declare where to find the dependencies of your project
