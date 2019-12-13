@@ -1,51 +1,57 @@
 package com.zoo.algorithm.sort;
 
-import com.zoo.base.Arrs;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.time.Clock;
 import java.util.concurrent.TimeUnit;
 
-@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark)//每次测试一个实例，多线程共享同一个类实例
+@Warmup(iterations = 100, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 public class BubbleSort {
 
-    public static void main(String[] args) throws RunnerException {
-//        int[] iarr = IntStream.iterate(1, i -> Double.valueOf(Math.random() * 1000).intValue()).limit(10).toArray();
-        Clock clock = Clock.systemUTC();
-        int[] array = {95, 85, 12, 52, 64, 74, 105, 502, 4, 7, 6, 1, 74, 60, 141, 19, 34, 45, 59};
-        System.out.println(Arrs.join(",", array));
-        long start = clock.millis();
-        for (int i = 0; i < 10000000; i++) {
-            bubbleSort(array);
-//            bubbleSort1(array);
-//            bubbleSort2(array);
-//            bubbleSort3(array);
-        }
-        long end = clock.millis();
-        System.out.println(Arrs.join(",", array));
-        System.out.println(end - start);
-
-        /*Options opt = new OptionsBuilder()
-                .include(BubbleSort.class.getSimpleName())
-                .measurementIterations(1000)
-                .forks(1)
-                .build();
-        new Runner(opt).run();*/
+    @State(Scope.Thread)//每个线程一个实例
+    public static class BenchmarkParam {
+        private int[] array = {95, 85, 12, 52, 64, 74, 105, 502, 4, 7, 6, 1, 74, 60, 141, 19, 34, 45, 59};
     }
 
+    public static void main(String[] args) throws RunnerException {
+//        Clock clock = Clock.systemUTC();
+//        BenchmarkParam param = new BenchmarkParam();
+//        System.out.println(Arrs.join(",", param.array));
+//        long start = clock.millis();
+//        for (int i = 0; i < 10000000; i++) {
+//            bubbleSort(param);
+//            bubbleSort1(param);
+//            bubbleSort2(param);
+//            bubbleSort3(param);
+//        }
+//        long end = clock.millis();
+//        System.out.println(Arrs.join(",", param.array));
+//        System.out.println(end - start);
+
+        Options opt = new OptionsBuilder()
+                .include(BubbleSort.class.getSimpleName())
+                .measurementIterations(1)
+                .forks(1)
+                .build();
+        new Runner(opt).run();
+    }
 
 
     /**
      * 冒泡排序
      *
-     * @param array
+     * @param param
      */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public static void bubbleSort(int[] array) {
+    public static void bubbleSort(BenchmarkParam param) {
+        int[] array = param.array;
         int temp = 0;
         for (int i = 0; i < array.length - 1; i++) {
             for (int j = 0; j < array.length - 1 - i; j++) {
@@ -61,12 +67,13 @@ public class BubbleSort {
     /**
      * 冒泡排序-优化1：冒泡排序过程中，可以检测到整个序列是否已经排序完成，进而可以避免掉后续的循环
      *
-     * @param array
+     * @param param
      */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public static void bubbleSort1(int[] array) {
+    public static void bubbleSort1(BenchmarkParam param) {
+        int[] array = param.array;
         int temp = 0;
         for (int i = 0; i < array.length - 1; i++) {
             boolean isOrdered = true;
@@ -89,12 +96,13 @@ public class BubbleSort {
      * 冒泡排序-优化2：进一步地，在每轮循环之后，可以确认，最后一次发生交换的位置之后的元素，都是已经排好序的，
      * 因此可以不再比较那个位置之后的元素，大幅度减少了比较的次数
      *
-     * @param array
+     * @param param
      */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public static void bubbleSort2(int[] array) {
+    public static void bubbleSort2(BenchmarkParam param) {
+        int[] array = param.array;
         int temp = 0, n = array.length - 1, j1;
         for (int i = 0, len = n; i < len; i++) {
             int newN = 0;
@@ -119,12 +127,13 @@ public class BubbleSort {
      * 冒泡排序-优化3：进行双向的循环，正向循环把最大元素移动到末尾，逆向循环把最小元素移动到最前<br>
      * 该优化也被称为是鸡尾酒排序(CockTailSort)。
      *
-     * @param array
+     * @param param
      */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public static void bubbleSort3(int[] array) {
+    public static void bubbleSort3(BenchmarkParam param) {
+        int[] array = param.array;
         int temp = 0, j1, start = 0, end = array.length - 1;
         while (start <= end) {
             int nEnd = start;
