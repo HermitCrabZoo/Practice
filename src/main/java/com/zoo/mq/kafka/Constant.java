@@ -4,7 +4,7 @@ public interface Constant {
 	/**
 	 * kafka集群
 	 */
-	String KAFKA_HOST_PORTS="192.168.2.11:9092,192.168.2.12:9092,192.168.2.13:9092";
+	String KAFKA_HOST_PORTS="192.168.2.25:9092,192.168.2.25:9093,192.168.2.25:9094";
 	
 	/**
 	 * Zookeeper集群
