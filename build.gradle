@@ -79,7 +79,7 @@ dependencies {
     api 'org.apache.commons:commons-pool2:2.4.2'
 
     //kafka
-    api 'org.apache.kafka:kafka_2.12:1.1.1'
+    api 'org.apache.kafka:kafka_2.13:2.4.0'
 
     //cpdetector部分
     api 'net.sourceforge.jchardet:jchardet:1.0'
@@ -113,6 +113,9 @@ dependencies {
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
+    mavenLocal()
+    maven{ url 'https://maven.aliyun.com/repository/public'}
+    maven{ url 'https://maven.aliyun.com/repository/jcenter'}
     jcenter()
     mavenCentral()
 }
