@@ -68,11 +68,12 @@ public class CLHLock {
         // 【注意】而不是所有正在自旋等待的线程去并发竞争锁
         node.locked = false;
         System.out.println("线程" + Thread.currentThread().getName() + "释放了锁！！！");
-        // 小伙伴们可以思考下，下面两句代码的作用是什么？？
+        //以下①和②的代码可以相互替换
+        // ①小伙伴们可以思考下，下面两句代码的作用是什么？？
         CLHNode newCurNode = new CLHNode();
         curNode.set(newCurNode);
 
-        // 【优化】能提高GC效率和节省内存空间，请思考：这是为什么？
+        // ②【优化】能提高GC效率和节省内存空间，请思考：这是为什么？
         curNode.set(predNode.get());
     }
 }
