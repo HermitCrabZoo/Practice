@@ -1,8 +1,8 @@
 package com.zoo.algorithm.search;
 
-import java.util.stream.IntStream;
-
 import com.zoo.base.Arrs;
+
+import java.util.stream.IntStream;
 
 public class BinarySearch {
     public static void main(String[] args) {
