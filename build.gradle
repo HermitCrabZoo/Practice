@@ -14,7 +14,7 @@ plugins {
 apply plugin: 'eclipse'
 
 //JDK11
-sourceCompatibility = 1.11
+sourceCompatibility = 19
 //版本号  
 version = '1.0'
 
@@ -26,8 +26,12 @@ eclipse {
 }
 
 //由于有些子依赖可能在运行时用不到,true代表下载子依赖，false代表不下载子依赖
-configurations.all {
+configurations.configureEach {
     transitive = true
+    resolutionStrategy{
+        //构建失败，提示冲突的版本
+//        failOnVersionConflict()
+    }
 }
 
 dependencies {
@@ -48,7 +52,8 @@ dependencies {
     testImplementation 'org.hamcrest:hamcrest-core:1.3'
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
 
-    compile fileTree(dir: 'lib', include: ['*.jar'])
+    compileOnly fileTree(dir: 'lib', include: ['*.jar'])
+    testCompileOnly fileTree(dir: 'lib', include: ['*.jar'])
 
     // javax
     api 'javax.annotation:javax.annotation-api:1.3.2'
@@ -116,12 +121,50 @@ repositories {
     mavenLocal()
     maven{ url 'https://maven.aliyun.com/repository/public'}
     maven{ url 'https://maven.aliyun.com/repository/jcenter'}
-    jcenter()
     mavenCentral()
 }
-tasks.withType(JavaCompile) {
+
+tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"//编译参数:未检查,过期API
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" //编译参数:未检查,过期API
+    options.compilerArgs << "--add-exports=java.base/jdk.internal.vm.annotation=ALL-UNNAMED"
+    options.compilerArgs << "--add-modules=jdk.incubator.vector,jdk.incubator.concurrent"
+    options.compilerArgs << '-Xlint:preview'
+    options.compilerArgs += "--enable-preview" //预览特性
+    // Try to turn them all off automatically
+//    options.compilerArgs << '-Xlint:none'
+//    options.compilerArgs << '-nowarn' // same as '-Xlint:none'
+
+    // Turn them off manually
+//    options.compilerArgs << '-Xlint:-auxiliaryclass'
+//    options.compilerArgs << '-Xlint:-cast'
+//    options.compilerArgs << '-Xlint:-classfile'
+//    options.compilerArgs << '-Xlint:-deprecation'
+//    options.compilerArgs << '-Xlint:-dep-ann'
+//    options.compilerArgs << '-Xlint:-divzero'
+//    options.compilerArgs << '-Xlint:-empty'
+//    options.compilerArgs << '-Xlint:-fallthrough'
+//    options.compilerArgs << '-Xlint:-finally'
+//    options.compilerArgs << '-Xlint:-options'
+//    options.compilerArgs << '-Xlint:-overloads'
+//    options.compilerArgs << '-Xlint:-overrides'
+//    options.compilerArgs << '-Xlint:-path'
+//    options.compilerArgs << '-Xlint:-processing'
+//    options.compilerArgs << '-Xlint:-rawtypes'
+//    options.compilerArgs << '-Xlint:-serial'
+//    options.compilerArgs << '-Xlint:-static'
+//    options.compilerArgs << '-Xlint:-try'
+//    options.compilerArgs << '-Xlint:-unchecked'
+//    options.compilerArgs << '-Xlint:-varargs'
+    println(options.compilerArgs)
+//    options.compilerArgs << "--add-exports=java.base/jdk.internal.vm.annotation=ALL-UNNAMED"<<"--add-exports=java.base/sun.net=ALL-UNNAMED"<<"--add-exports=java.base/sun.net.util=ALL-UNNAMED"<<"--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED"<<"--add-exports=java.base/sun.net.www=ALL-UNNAMED"
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += "--enable-preview"
+}
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += "--enable-preview"
 }
 
 //将依赖一同打包进项目生成的jar文件里
@@ -132,7 +175,7 @@ jar {
         )
     }
     //依赖打包进来
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 
@@ -161,3 +204,4 @@ task copyJar(type: Copy) {
 
 task release(type: Copy, dependsOn: [assemble, clearJar, copyJar])
 */
+targetCompatibility = JavaVersion.VERSION_19
