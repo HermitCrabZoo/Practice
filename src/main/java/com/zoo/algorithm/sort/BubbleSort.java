@@ -15,7 +15,7 @@ public class BubbleSort {
 
     @State(Scope.Thread)//每个线程一个实例
     public static class BenchmarkParam {
-        private int[] array = {95, 85, 12, 52, 64, 74, 105, 502, 4, 7, 6, 1, 74, 60, 141, 19, 34, 45, 59};
+        private final int[] array = {95, 85, 12, 52, 64, 74, 105, 502, 4, 7, 6, 1, 74, 60, 141, 19, 34, 45, 59};
     }
 
     public static void main(String[] args) throws RunnerException {
