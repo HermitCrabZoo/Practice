@@ -139,7 +139,7 @@ public abstract class PoolSizeCalculator {
      * pools work queue
      */
     public long calculateMemoryUsage() {
-        BlockingQueue queue = createWorkQueue();
+        BlockingQueue<Runnable> queue = createWorkQueue();
         for (int i = 0; i < SAMPLE_QUEUE_SIZE; i++) {
             queue.add(creatTask());
         }
@@ -173,7 +173,7 @@ public abstract class PoolSizeCalculator {
      *
      * @return queue instance
      */
-    protected abstract BlockingQueue createWorkQueue();
+    protected abstract BlockingQueue<Runnable> createWorkQueue();
 
     /**
      * Calculate current cpu time. Various frameworks may be used here,

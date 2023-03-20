@@ -18,8 +18,8 @@ public class SimplePoolSizeCaculatorImpl extends PoolSizeCalculator {
     }
 
     @Override
-    protected BlockingQueue createWorkQueue() {
-        return new LinkedBlockingQueue(1000);
+    protected BlockingQueue<Runnable> createWorkQueue() {
+        return new LinkedBlockingQueue<>(1000);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SimplePoolSizeCaculatorImpl extends PoolSizeCalculator {
 
     public static void main(String[] args) {
         PoolSizeCalculator poolSizeCalculator = new SimplePoolSizeCaculatorImpl();
-        poolSizeCalculator.calculateBoundaries(new BigDecimal(1.0), new BigDecimal(100000));
+        poolSizeCalculator.calculateBoundaries(new BigDecimal("1.0"), new BigDecimal(100000));
     }
 
 }
